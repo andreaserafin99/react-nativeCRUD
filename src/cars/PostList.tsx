@@ -15,9 +15,10 @@ import {Post} from "../../Models/models";
 import axios, {AxiosResponse} from "axios";
 import * as url from "url";
 import { TouchableNativeFeedback } from 'react-native';
+import {useRoute} from "@react-navigation/native";
 
 // @ts-ignore
-export function CarList({ navigation }) {
+export function PostList({ navigation }) {
     let [postList, setPostList] = useState<Post[]>([]);
     useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/posts').then((data: AxiosResponse) => {
@@ -30,7 +31,7 @@ export function CarList({ navigation }) {
 
     // @ts-ignore
     const renderItem = ({item}) => (
-        <TouchableOpacity style={styles.item} onPress={()=> navigation.navigate('Car Detail', {id: item.id})}>
+        <TouchableOpacity style={styles.item} onPress={()=> navigation.navigate('Post Detail', {id: item.id})}>
             <Text style={styles.titles}>{item.title}</Text>
             <Text> {item.body} </Text>
             {/*<Button title={'GET DETAIL'} onPress={()=> navigation.navigate('Car Detail', {id: item.id})} />*/}

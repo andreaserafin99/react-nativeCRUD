@@ -1,13 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Button, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Animated, Button, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import {Post, User} from "../../../Models/models";
 import axios, {AxiosResponse} from "axios";
 
 // @ts-ignore
-export function CarDetail({route, navigation }) {
+export function PostDetail({route, navigation }) {
     const {id} = route.params;
     let [translation, setTranslation] = useState(-30);
     let [translation2, setTranslation2] = useState(-30);
+
+    let [activityIndicatorState, setActivityIndicatorState] = useState<boolean>(false)
     const styles = StyleSheet.create({
         container: {
             justifyContent: 'center',
@@ -28,6 +30,9 @@ export function CarDetail({route, navigation }) {
         postContainer: {
             margin: 20,
             transform: [{translateX: translation2}],
+        },
+        activityIndicator: {
+          alignSelf: "center"
         },
         username: {
             fontSize: 32,
@@ -50,6 +55,7 @@ export function CarDetail({route, navigation }) {
 
     useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/posts/' + id).then((data: AxiosResponse) => {
+            setActivityIndicatorState(activityIndicatorState = true);
             setTimeout(() => {
                 axios.get('https://jsonplaceholder.typicode.com/users/' + data.data?.userId).then((response: AxiosResponse) => {
                     for (let i = -30; i < 0; i++) {
@@ -58,6 +64,7 @@ export function CarDetail({route, navigation }) {
                         }, 15 * i);
                     }
                     setUser(user = response.data);
+                    setActivityIndicatorState(activityIndicatorState = false);
                     console.log(user);
                     setTimeout(() => {
                         for (let i = -30; i < 0; i++) {
@@ -67,7 +74,7 @@ export function CarDetail({route, navigation }) {
                         }
                         setPost(post = data.data)
                         console.log(post);
-                    }, 1500)
+                    }, 500)
                 })
             }, 1500)
         }).catch((e) => {
@@ -82,6 +89,7 @@ export function CarDetail({route, navigation }) {
                     <Text style={styles.username}> {user?.username} </Text>
                     <Text style={styles.email}> {user?.email} </Text>
                 </View>
+                <ActivityIndicator style={styles.activityIndicator} animating={activityIndicatorState}  />
                 <View style={styles.postContainer}>
                     <Text style={styles.title}> {post?.title} </Text>
                     <Text> {post?.body} </Text>
